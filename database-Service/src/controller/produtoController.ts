@@ -4,6 +4,11 @@ import { db } from "../config/database-config.js";
 export const criarProduto = async (req: any, res: any) => {
   console.log("Requisição POST recebida");
   console.log("Corpo da requisição:", req.body);
+  
+  // Se houver dados do usuário autenticado, logá-los
+  if (req.user) {
+    console.log("Usuário autenticado:", req.user.username, "ID:", req.user.id);
+  }
 
   try {
     const p = new produto(req.body);
@@ -25,6 +30,8 @@ export const criarProduto = async (req: any, res: any) => {
     res.status(201).json({
       message: `Produto ${novoProduto.id_produto} inserido com sucesso!`,
       produto: novoProduto,
+      // Incluir informação do usuário que criou (se autenticado)
+      ...(req.user && { createdBy: req.user.username })
     });
   } catch (err: any) {
     console.error("Erro ao inserir produto:", err);
