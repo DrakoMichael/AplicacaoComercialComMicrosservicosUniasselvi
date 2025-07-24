@@ -55,3 +55,32 @@ export const listarProdutos = async (req: any, res: any) => {
     });
   }
 };
+
+export const listarProdutoPorId = async (req: any, res: any) => {
+  const id = req.params.id;
+  console.log(`Requisição GET recebida para listar produto com ID: ${id}`);
+
+  try {
+    if (isNaN(Number(id))) {
+      return res.status(400).json({ error: "ID inválido fornecido." });
+    }
+
+    const query = "SELECT * FROM produto WHERE id_produto = $1";
+    const produto = await db.oneOrNone(query, [id]);
+
+    if (!produto) {
+      return res.status(404).json({ error: "Produto não encontrado." });
+    }
+
+    console.log("Produto encontrado:", produto);
+
+    res.status(200).json(produto);
+  } catch (err: any) {
+    console.error("Erro ao listar produto por ID:", err);
+
+    res.status(500).json({
+      message: "Erro ao obter o produto do banco de dados.",
+      error: err.message || "Erro desconhecido",
+    });
+  }
+}
