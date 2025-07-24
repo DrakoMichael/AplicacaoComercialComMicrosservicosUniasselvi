@@ -1,2 +1,5 @@
 frontend-Service/node_modules/
 database-Service/node_modules/
+
+frontend-Service/dist/
+database-Service/dist/
