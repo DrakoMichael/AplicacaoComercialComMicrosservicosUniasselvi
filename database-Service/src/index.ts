@@ -4,15 +4,19 @@ import routes from "./routes/routes.js";
 import cors from "cors";
 
 const app = express();
-export const appPort = 8080;
+export const appPort = 3332;
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3333",
+  })
+);
 
 app.use(express.json());
 
 app.use(routes);
 
-app.listen(appPort, "0.0.0.0", () => {
+app.listen(appPort, () => {
   console.log(`Servidor rodando em http://localhost:${appPort}`);
 });
 
