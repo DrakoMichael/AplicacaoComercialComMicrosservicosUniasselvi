@@ -39,34 +39,16 @@ export const criarProduto = async (req: any, res: any) => {
 export const listarProdutos = async (req: any, res: any) => {
   console.log("Requisição GET recebida para listar produtos");
 
-  try {
-    const query = "SELECT * FROM produto";
-    const produtos = await db.any(query);
-
-    console.log("Produtos encontrados:", produtos);
-
-    res.status(200).json(produtos);
-  } catch (err: any) {
-    console.error("Erro ao listar produtos:", err);
-
-    res.status(500).json({
-      message: "Erro ao obter a lista de produtos do banco de dados.",
-      error: err.message || "Erro desconhecido",
-    });
-  }
-};
-
-export const listarProdutoPorId = async (req: any, res: any) => {
-  const id = req.params.id;
-  console.log(`Requisição GET recebida para listar produto com ID: ${id}`);
+  if (req.params.id){
+  console.log(`Requisição GET recebida para listar produto com ID: ${req.params.id}`);
 
   try {
-    if (isNaN(Number(id))) {
+    if (isNaN(Number(req.params.id))) {
       return res.status(400).json({ error: "ID inválido fornecido." });
     }
 
     const query = "SELECT * FROM produto WHERE id_produto = $1";
-    const produto = await db.oneOrNone(query, [id]);
+    const produto = await db.oneOrNone(query, [req.params.id]);
 
     if (!produto) {
       return res.status(404).json({ error: "Produto não encontrado." });
@@ -83,4 +65,21 @@ export const listarProdutoPorId = async (req: any, res: any) => {
       error: err.message || "Erro desconhecido",
     });
   }
-}
+  }
+
+  try {
+    const query = "SELECT * FROM produto";
+    const produtos = await db.any(query);
+
+    console.log("Produtos encontrados:", produtos);
+
+    res.status(200).json(produtos);
+  } catch (err: any) {
+    console.error("Erro ao listar produtos:", err);
+
+    res.status(500).json({
+      message: "Erro ao obter a lista de produtos do banco de dados.",
+      error: err.message || "Erro desconhecido",
+    });
+  }
+};
